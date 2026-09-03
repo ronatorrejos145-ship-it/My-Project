@@ -23,6 +23,8 @@ use App\Http\Controllers\AssetQrVerificationController;
 use App\Http\Controllers\AssetApiController;
 use App\Http\Controllers\SubscriberManagementController;
 use App\Http\Controllers\SubscriberApiController;
+use App\Http\Controllers\BillingManagementController;
+use App\Http\Controllers\BillingApiController;
 use App\Http\Controllers\InventoryManagementController;
 use App\Http\Controllers\InventoryApiController;
 use App\Http\Controllers\ProcurementManagementController;
@@ -94,6 +96,12 @@ Route::middleware(['auth', 'account.status'])->group(function () {
     Route::get('api/gis/viewport', [GisApiController::class, 'viewport'])->name('api.gis.viewport');
     Route::get('api/gis/nearby', [GisApiController::class, 'nearby'])->name('api.gis.nearby');
 
+    // Phase 12 Billing Engine REST APIs
+    Route::get('api/billing/charges', [BillingApiController::class, 'indexCharges'])->name('api.billing.charges.index');
+    Route::get('api/billing/runs', [BillingApiController::class, 'indexRuns'])->name('api.billing.runs.index');
+    Route::post('api/billing/preview/{serviceAccount}', [BillingApiController::class, 'previewCustomer'])->name('api.billing.preview');
+    Route::post('api/billing/runs/execute', [BillingApiController::class, 'executeRun'])->name('api.billing.runs.execute');
+
     // Phase 11 Subscriber REST APIs
     Route::get('api/subscribers', [SubscriberApiController::class, 'index'])->name('api.subscribers.index');
     Route::get('api/subscribers/{subscriber}', [SubscriberApiController::class, 'show'])->name('api.subscribers.show');
@@ -128,6 +136,15 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 12 Billing Engine Operations Portal
+        Route::get('billing/dashboard', [BillingManagementController::class, 'dashboard'])->name('billing.dashboard');
+        Route::get('billing/runs', [BillingManagementController::class, 'runs'])->name('billing.runs');
+        Route::post('billing/runs/execute', [BillingManagementController::class, 'executeRun'])->name('billing.runs.execute');
+        Route::get('billing/charges', [BillingManagementController::class, 'charges'])->name('billing.charges');
+        Route::get('billing/exceptions', [BillingManagementController::class, 'exceptions'])->name('billing.exceptions');
+        Route::get('billing/proration-calculator', [BillingManagementController::class, 'prorationCalculator'])->name('billing.proration-calculator');
+        Route::post('billing/proration-calculator', [BillingManagementController::class, 'prorationCalculator'])->name('billing.proration-calculator.calculate');
 
         // Phase 11 Subscriber & Subscription Management Portal
         Route::get('subscribers', [SubscriberManagementController::class, 'index'])->name('subscribers.index');

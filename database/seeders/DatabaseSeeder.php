@@ -42,6 +42,8 @@ class DatabaseSeeder extends Seeder
             InstallationWorkOrderSeeder::class,
             // Phase 11 Subscriber & Subscription Seeder
             SubscriberSeeder::class,
+            // Phase 12 Billing Engine Seeder
+            BillingEngineSeeder::class,
         ]);
     }
 }
