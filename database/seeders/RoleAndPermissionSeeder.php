@@ -29,6 +29,24 @@ class RoleAndPermissionSeeder extends Seeder
             ['name' => 'Verify Customer Documents', 'code' => 'customers.verify_documents', 'module' => 'customers'],
             ['name' => 'Export Customer Master Data', 'code' => 'customers.export', 'module' => 'customers'],
 
+            // Online Applications & Serviceability
+            ['name' => 'View Service Applications', 'code' => 'applications.view', 'module' => 'applications'],
+            ['name' => 'Create Service Applications', 'code' => 'applications.create', 'module' => 'applications'],
+            ['name' => 'Update Service Applications', 'code' => 'applications.update', 'module' => 'applications'],
+            ['name' => 'Review Service Applications', 'code' => 'applications.review', 'module' => 'applications'],
+            ['name' => 'Approve Service Applications', 'code' => 'applications.approve', 'module' => 'applications'],
+            ['name' => 'Reject Service Applications', 'code' => 'applications.reject', 'module' => 'applications'],
+            ['name' => 'Cancel Service Applications', 'code' => 'applications.cancel', 'module' => 'applications'],
+            ['name' => 'Run Technical Serviceability Checks', 'code' => 'serviceability.check', 'module' => 'serviceability'],
+            ['name' => 'Override Serviceability Results', 'code' => 'serviceability.override', 'module' => 'serviceability'],
+
+            // Product Catalog
+            ['name' => 'View Service Packages', 'code' => 'packages.view', 'module' => 'packages'],
+            ['name' => 'Create Service Packages', 'code' => 'packages.create', 'module' => 'packages'],
+            ['name' => 'Update Service Packages', 'code' => 'packages.update', 'module' => 'packages'],
+            ['name' => 'Approve Service Packages', 'code' => 'packages.approve', 'module' => 'packages'],
+            ['name' => 'Create Package Versions', 'code' => 'packages.versions.create', 'module' => 'packages'],
+
             // Lead Management
             ['name' => 'View CRM Leads', 'code' => 'leads.view', 'module' => 'leads'],
             ['name' => 'Create CRM Leads', 'code' => 'leads.create', 'module' => 'leads'],
@@ -39,27 +57,10 @@ class RoleAndPermissionSeeder extends Seeder
             // Employee Management
             ['name' => 'View Employees', 'code' => 'employees.view', 'module' => 'employees'],
             ['name' => 'Create Employees', 'code' => 'employees.create', 'module' => 'employees'],
-            ['name' => 'Update Employees', 'code' => 'employees.update', 'module' => 'employees'],
-            ['name' => 'Delete Employees', 'code' => 'employees.delete', 'module' => 'employees'],
-
-            // Billing & Ledger
-            ['name' => 'View Billing', 'code' => 'billing.view', 'module' => 'billing'],
-            ['name' => 'Manage Billing', 'code' => 'billing.create', 'module' => 'billing'],
-            ['name' => 'View Ledger', 'code' => 'ledger.view', 'module' => 'billing'],
 
             // Technical & Field
             ['name' => 'View Technical Work Orders', 'code' => 'technical.view', 'module' => 'technical'],
             ['name' => 'Create Technical Work Orders', 'code' => 'technical.create', 'module' => 'technical'],
-
-            // Network NOC
-            ['name' => 'View Network NOC', 'code' => 'network.view', 'module' => 'noc'],
-
-            // Warehouse & Tools
-            ['name' => 'View Inventory', 'code' => 'inventory.view', 'module' => 'inventory'],
-
-            // Customer Support
-            ['name' => 'View Support Tickets', 'code' => 'tickets.view', 'module' => 'support'],
-            ['name' => 'Create Support Tickets', 'code' => 'tickets.create', 'module' => 'support'],
 
             // System Administration
             ['name' => 'Manage System Settings', 'code' => 'settings.manage', 'module' => 'settings'],
@@ -79,17 +80,10 @@ class RoleAndPermissionSeeder extends Seeder
             'SUPER_ADMIN' => ['name' => 'Super Administrator', 'description' => 'Full unrestricted platform control'],
             'ADMIN' => ['name' => 'Administrator', 'description' => 'System administration and user management'],
             'MANAGER' => ['name' => 'Manager', 'description' => 'Executive operational overview'],
-            'FINANCE' => ['name' => 'Finance & Accounting', 'description' => 'Ledger, invoices and financial operations'],
-            'CASHIER' => ['name' => 'Cashier', 'description' => 'Counter payments and payment recording'],
             'CUSTOMER_SERVICE' => ['name' => 'Customer Service Rep', 'description' => 'CRM and support ticket management'],
             'SALES' => ['name' => 'Sales Agent', 'description' => 'Prospect registration and subscription sales'],
-            'TECHNICIAN' => ['name' => 'Field Technician', 'description' => 'Technical surveys, installations and repairs'],
             'TECHNICAL_SUPERVISOR' => ['name' => 'Technical Supervisor', 'description' => 'Field crew dispatch and work order approval'],
-            'NOC' => ['name' => 'NOC Engineer', 'description' => 'Network infrastructure and monitoring'],
-            'WAREHOUSE' => ['name' => 'Warehouse Keeper', 'description' => 'Stock, equipment and tool management'],
-            'HR' => ['name' => 'Human Resources', 'description' => 'Employee records'],
-            'EMPLOYEE' => ['name' => 'Staff Employee', 'description' => 'Standard internal staff'],
-            'CUSTOMER' => ['name' => 'Subscriber / Customer', 'description' => 'Customer self-service portal'],
+            'TECHNICAL' => ['name' => 'Field Technician', 'description' => 'Technical surveys, installations and repairs'],
         ];
 
         foreach ($roles as $code => $data) {
@@ -98,34 +92,23 @@ class RoleAndPermissionSeeder extends Seeder
                 'description' => $data['description'],
             ]);
 
-            if ($code === 'SUPER_ADMIN' || $code === 'ADMIN') {
+            if ($code === 'SUPER_ADMIN' || $code === 'ADMIN' || $code === 'MANAGER') {
                 $roleModel->permissions()->sync(array_column($permissionModels, 'id'));
-            } elseif ($code === 'CUSTOMER_SERVICE') {
+            } elseif ($code === 'CUSTOMER_SERVICE' || $code === 'SALES') {
                 $roleModel->permissions()->sync([
+                    $permissionModels['applications.view']->id,
+                    $permissionModels['applications.create']->id,
+                    $permissionModels['applications.review']->id,
+                    $permissionModels['serviceability.check']->id,
                     $permissionModels['customers.view']->id,
                     $permissionModels['customers.create']->id,
-                    $permissionModels['customers.update']->id,
-                    $permissionModels['customers.view_documents']->id,
-                    $permissionModels['customers.upload_documents']->id,
-                    $permissionModels['customers.verify_documents']->id,
-                    $permissionModels['leads.view']->id,
-                    $permissionModels['tickets.view']->id,
-                    $permissionModels['tickets.create']->id,
                 ]);
-            } elseif ($code === 'SALES') {
+            } elseif ($code === 'TECHNICAL_SUPERVISOR') {
                 $roleModel->permissions()->sync([
-                    $permissionModels['customers.view']->id,
-                    $permissionModels['customers.create']->id,
-                    $permissionModels['leads.view']->id,
-                    $permissionModels['leads.create']->id,
-                    $permissionModels['leads.update']->id,
-                    $permissionModels['leads.convert']->id,
-                ]);
-            } elseif ($code === 'TECHNICIAN') {
-                $roleModel->permissions()->sync([
-                    $permissionModels['customers.view']->id,
-                    $permissionModels['technical.view']->id,
-                    $permissionModels['technical.create']->id,
+                    $permissionModels['applications.view']->id,
+                    $permissionModels['applications.review']->id,
+                    $permissionModels['serviceability.check']->id,
+                    $permissionModels['serviceability.override']->id,
                 ]);
             }
         }

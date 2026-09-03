@@ -24,6 +24,9 @@ use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServicePackageVersionController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\ServicePackageApiController;
+use App\Http\Controllers\ServiceApplicationController;
+use App\Http\Controllers\ServiceabilityController;
+use App\Http\Controllers\PublicApplicationApiController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\NumberSequenceController;
 
@@ -43,20 +46,33 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
 });
 
-// Public Catalog API
-Route::get('api/public/packages', [ServicePackageApiController::class, 'index'])->name('api.packages.index');
+// Public Customer Application Wizard & APIs
+Route::get('apply', [ServiceApplicationController::class, 'wizard'])->name('public.applications.wizard');
+Route::post('apply', [ServiceApplicationController::class, 'store'])->name('public.applications.submit');
 
-// Authenticated Routes
+Route::get('api/public/packages', [ServicePackageApiController::class, 'index'])->name('api.packages.index');
+Route::post('api/public/serviceability/check', [PublicApplicationApiController::class, 'checkServiceability'])->name('api.serviceability.check');
+Route::post('api/public/applications', [PublicApplicationApiController::class, 'submit'])->name('api.applications.submit');
+Route::get('api/public/applications/{number}/status', [PublicApplicationApiController::class, 'status'])->name('api.applications.status');
+
+// Authenticated Staff Routes
 Route::middleware(['auth', 'account.status'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Admin & Master Data Routes
+    // Admin & Staff Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         // Users & Core HR
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 5 Applications & Serviceability
+        Route::resource('applications', ServiceApplicationController::class);
+        Route::post('applications/{application}/status', [ServiceApplicationController::class, 'updateStatus'])->name('applications.status');
+        Route::get('serviceability/check', [ServiceabilityController::class, 'checkForm'])->name('serviceability.check.form');
+        Route::post('serviceability/check', [ServiceabilityController::class, 'check'])->name('serviceability.check');
+        Route::post('serviceability/{check}/override', [ServiceabilityController::class, 'override'])->name('serviceability.override');
 
         // Phase 3 CRM & Customer 360
         Route::get('crm/dashboard', [CrmDashboardController::class, 'index'])->name('crm.dashboard');

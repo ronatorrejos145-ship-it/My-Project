@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             CustomerCRMAndLeadSeeder::class,
             // Phase 4 Product Catalog Seeder
             ProductCatalogSeeder::class,
+            // Phase 5 Online Application & Serviceability Seeder
+            ServiceApplicationSeeder::class,
         ]);
     }
 }

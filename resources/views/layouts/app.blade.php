@@ -74,9 +74,26 @@
                     </div>
 
                     <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Applications & Coverage (Phase 5)</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <a href="{{ route('admin.applications.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-indigo-600 dark:text-indigo-400">📝 Service Applications</a>
+                            <a href="{{ route('admin.serviceability.check.form') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📡 Serviceability Checker</a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Catalog & Product (Phase 4)</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <a href="{{ route('admin.packages.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">⚡ Internet Plans</a>
+                            <a href="{{ route('admin.packages.categories.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📁 Categories</a>
+                            <a href="{{ route('admin.packages.promotions.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🎁 Promotions</a>
+                        </div>
+                    </div>
+
+                    <div>
                         <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Customer & CRM (Phase 3)</p>
                         <div class="mt-2 space-y-1 text-sm">
-                            <a href="{{ route('admin.crm.dashboard') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-indigo-600 dark:text-indigo-400">📈 CRM Dashboard</a>
+                            <a href="{{ route('admin.crm.dashboard') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📈 CRM Dashboard</a>
                             <a href="{{ route('admin.customers.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👤 Customer Directory</a>
                             <a href="{{ route('admin.leads.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🎯 CRM Sales Leads</a>
                         </div>
@@ -91,7 +108,6 @@
                             <a href="{{ route('admin.network.nodes.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📡 Network Infrastructure</a>
                             <a href="{{ route('admin.assets.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📦 Assets & Tools</a>
                             <a href="{{ route('admin.warehouses.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🏬 Warehouse Catalog</a>
-                            <a href="{{ route('admin.packages.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">⚡ Service Packages</a>
                             <a href="{{ route('admin.finance.accounts.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">💼 Chart of Accounts</a>
                             <a href="{{ route('admin.number-sequences.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🔢 Number Sequences</a>
                         </div>
