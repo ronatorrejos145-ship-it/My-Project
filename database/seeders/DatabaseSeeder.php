@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             PackageAndBillingMasterDataSeeder::class,
             OperationsAndFinanceMasterDataSeeder::class,
             NumberSequenceSeeder::class,
+            // Phase 3 CRM & Lead Seeders
+            CustomerCRMAndLeadSeeder::class,
         ]);
     }
 }

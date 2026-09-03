@@ -7,6 +7,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerDocumentController;
+use App\Http\Controllers\LeadController;
+use App\Http\Controllers\CrmDashboardController;
 use App\Http\Controllers\RoleAndPermissionController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\SettingController;
@@ -47,7 +50,20 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 3 CRM & Customer 360
+        Route::get('crm/dashboard', [CrmDashboardController::class, 'index'])->name('crm.dashboard');
         Route::resource('customers', CustomerController::class);
+        Route::post('customers/{customer}/status', [CustomerController::class, 'changeStatus'])->name('customers.status');
+        Route::post('customers/{customer}/notes', [CustomerController::class, 'addNote'])->name('customers.notes.store');
+        Route::post('customers/{customer}/documents', [CustomerDocumentController::class, 'store'])->name('customers.documents.store');
+        Route::get('documents/{document}/download', [CustomerDocumentController::class, 'download'])->name('customers.documents.download');
+        Route::post('documents/{document}/verify', [CustomerDocumentController::class, 'verify'])->name('customers.documents.verify');
+
+        // Phase 3 Leads & Pipeline
+        Route::resource('leads', LeadController::class);
+        Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');
+        Route::post('leads/{lead}/activities', [LeadController::class, 'addActivity'])->name('leads.activities.store');
 
         // RBAC, Audit, Settings
         Route::get('roles-permissions', [RoleAndPermissionController::class, 'index'])->name('roles-permissions.index');

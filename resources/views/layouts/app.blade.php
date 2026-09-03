@@ -68,8 +68,17 @@
                         <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Main</p>
                         <div class="mt-2 space-y-1">
                             <a href="{{ route('dashboard') }}" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
-                                📊 Dashboard
+                                📊 Platform Dashboard
                             </a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Customer & CRM (Phase 3)</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <a href="{{ route('admin.crm.dashboard') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-indigo-600 dark:text-indigo-400">📈 CRM Dashboard</a>
+                            <a href="{{ route('admin.customers.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👤 Customer Directory</a>
+                            <a href="{{ route('admin.leads.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🎯 CRM Sales Leads</a>
                         </div>
                     </div>
 
@@ -94,7 +103,6 @@
                             <a href="{{ route('admin.users.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👥 Users</a>
                             <a href="{{ route('admin.departments.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🏛️ Departments</a>
                             <a href="{{ route('admin.employees.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👔 Employees</a>
-                            <a href="{{ route('admin.customers.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👤 Customers</a>
                             <a href="{{ route('admin.roles-permissions.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🛡️ Roles & Permissions</a>
                             <a href="{{ route('admin.audit-logs.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📋 Audit Logs</a>
                             <a href="{{ route('admin.settings.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">⚙️ Settings</a>
