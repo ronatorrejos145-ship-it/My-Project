@@ -9,7 +9,7 @@ class PackageFeature extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'name', 'description'];
+    protected $fillable = ['code', 'name', 'feature_type', 'default_value', 'description'];
 
     public function packages()
     {

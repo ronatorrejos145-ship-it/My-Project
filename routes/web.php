@@ -20,6 +20,10 @@ use App\Http\Controllers\NetworkNodeController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ServicePackageController;
+use App\Http\Controllers\ServiceCategoryController;
+use App\Http\Controllers\ServicePackageVersionController;
+use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\ServicePackageApiController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\NumberSequenceController;
 
@@ -38,6 +42,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
 });
+
+// Public Catalog API
+Route::get('api/public/packages', [ServicePackageApiController::class, 'index'])->name('api.packages.index');
 
 // Authenticated Routes
 Route::middleware(['auth', 'account.status'])->group(function () {
@@ -65,6 +72,15 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');
         Route::post('leads/{lead}/activities', [LeadController::class, 'addActivity'])->name('leads.activities.store');
 
+        // Phase 4 Product Catalog & Service Packages
+        Route::get('packages/categories', [ServiceCategoryController::class, 'index'])->name('packages.categories.index');
+        Route::post('packages/categories', [ServiceCategoryController::class, 'store'])->name('packages.categories.store');
+        Route::get('packages/promotions', [PromotionController::class, 'index'])->name('packages.promotions.index');
+        Route::post('packages/promotions', [PromotionController::class, 'store'])->name('packages.promotions.store');
+        Route::resource('packages', ServicePackageController::class);
+        Route::get('packages/{package}/versions/create', [ServicePackageVersionController::class, 'create'])->name('packages.versions.create');
+        Route::post('packages/{package}/versions', [ServicePackageVersionController::class, 'store'])->name('packages.versions.store');
+
         // RBAC, Audit, Settings
         Route::get('roles-permissions', [RoleAndPermissionController::class, 'index'])->name('roles-permissions.index');
         Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
@@ -86,9 +102,6 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::get('warehouses', [WarehouseController::class, 'index'])->name('warehouses.index');
         Route::get('warehouses/items', [WarehouseController::class, 'items'])->name('warehouses.items');
         Route::get('warehouses/suppliers', [WarehouseController::class, 'suppliers'])->name('warehouses.suppliers');
-
-        // Packages & Billing
-        Route::get('packages', [ServicePackageController::class, 'index'])->name('packages.index');
 
         // Finance Accounts
         Route::get('finance/accounts', [AccountController::class, 'index'])->name('finance.accounts.index');

@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
             NumberSequenceSeeder::class,
             // Phase 3 CRM & Lead Seeders
             CustomerCRMAndLeadSeeder::class,
+            // Phase 4 Product Catalog Seeder
+            ProductCatalogSeeder::class,
         ]);
     }
 }
