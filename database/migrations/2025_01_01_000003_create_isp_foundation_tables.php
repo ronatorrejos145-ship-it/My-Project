@@ -27,7 +27,6 @@ return new class extends Migration
             $table->foreignId('department_id')->constrained()->onDelete('restrict');
             $table->string('position');
             $table->string('employment_status')->default('ACTIVE'); // ACTIVE, ON_LEAVE, TERMINATED, RESIGNED
-            $table->date('hire_date')->nullable();
             $table->string('phone')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();

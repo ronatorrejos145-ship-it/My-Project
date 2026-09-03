@@ -10,6 +10,7 @@ class CustomerInstallationAcceptanceController extends Controller
 {
     public function show(InstallationWorkOrder $installation)
     {
+        $this->authorize('view', $installation);
         $installation->load(['customer', 'package', 'equipment', 'tests', 'photos']);
 
         return view('customer.installations.acceptance', compact('installation'));
@@ -17,6 +18,8 @@ class CustomerInstallationAcceptanceController extends Controller
 
     public function accept(Request $request, InstallationWorkOrder $installation, InstallationAcceptanceService $acceptanceService)
     {
+        $this->authorize('update', $installation);
+
         $validated = $request->validate([
             'signer_name' => 'required|string|max:255',
             'signer_relationship' => 'required|string',

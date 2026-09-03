@@ -80,12 +80,11 @@ Route::post('api/public/applications', [PublicApplicationApiController::class, '
 Route::get('api/public/applications/{number}/status', [PublicApplicationApiController::class, 'status'])->name('api.applications.status');
 Route::get('api/gis/geojson/service-areas', [GisApiController::class, 'serviceAreaGeoJson'])->name('api.gis.geojson.service-areas');
 
-// Customer Installation Acceptance Portal
-Route::get('customer/installations/{installation}/acceptance', [CustomerInstallationAcceptanceController::class, 'show'])->name('customer.installations.acceptance');
-Route::post('customer/installations/{installation}/accept', [CustomerInstallationAcceptanceController::class, 'accept'])->name('customer.installations.accept');
-
 // Authenticated Staff Routes
 Route::middleware(['auth', 'account.status'])->group(function () {
+    // Customer Installation Acceptance Portal
+    Route::get('customer/installations/{installation}/acceptance', [CustomerInstallationAcceptanceController::class, 'show'])->name('customer.installations.acceptance');
+    Route::post('customer/installations/{installation}/accept', [CustomerInstallationAcceptanceController::class, 'accept'])->name('customer.installations.accept');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
