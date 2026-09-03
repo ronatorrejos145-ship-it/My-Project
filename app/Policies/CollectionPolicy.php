@@ -9,16 +9,16 @@ class CollectionPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-collections') || $user->hasPermissionTo('manage-collections') || $user->hasPermissionTo('view-finance');
+        return $user->hasPermission('view-collections') || $user->hasPermission('manage-collections') || $user->hasPermission('view-finance') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function createAction(User $user): bool
     {
-        return $user->hasPermissionTo('manage-collections') || $user->hasPermissionTo('execute-collections');
+        return $user->hasPermission('manage-collections') || $user->hasPermission('execute-collections') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function manageArrangements(User $user): bool
     {
-        return $user->hasPermissionTo('manage-collections') || $user->hasPermissionTo('approve-arrangements') || $user->hasRole('SUPER_ADMIN');
+        return $user->hasPermission('manage-collections') || $user->hasPermission('approve-arrangements') || $user->hasRole('SUPER_ADMIN');
     }
 }

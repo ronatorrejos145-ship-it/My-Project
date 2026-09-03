@@ -52,6 +52,8 @@ class DatabaseSeeder extends Seeder
             Phase15FinancialAdjustmentSeeder::class,
             // Phase 16 Collections & Suspension Seeder
             Phase16CollectionsSeeder::class,
+            // Phase 17 Customer Portal Seeder
+            Phase17CustomerPortalSeeder::class,
         ]);
     }
 }

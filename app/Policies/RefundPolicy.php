@@ -9,21 +9,21 @@ class RefundPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-finance') || $user->hasPermissionTo('manage-refunds');
+        return $user->hasPermission('view-finance') || $user->hasPermission('manage-refunds') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create-refunds') || $user->hasPermissionTo('manage-finance');
+        return $user->hasPermission('create-refunds') || $user->hasPermission('manage-finance') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function approve(User $user, RefundRequest $request): bool
     {
-        return $user->hasPermissionTo('approve-refunds') || $user->hasRole('SUPER_ADMIN');
+        return $user->hasPermission('approve-refunds') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function reverse(User $user, RefundRequest $request): bool
     {
-        return $user->hasPermissionTo('reverse-refunds') || $user->hasRole('SUPER_ADMIN');
+        return $user->hasPermission('reverse-refunds') || $user->hasRole('SUPER_ADMIN');
     }
 }

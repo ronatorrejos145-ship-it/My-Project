@@ -9,16 +9,16 @@ class ReconnectionPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-reconnections') || $user->hasPermissionTo('manage-collections') || $user->hasPermissionTo('view-finance');
+        return $user->hasPermission('view-reconnections') || $user->hasPermission('manage-collections') || $user->hasPermission('view-finance') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function request(User $user): bool
     {
-        return $user->hasPermissionTo('request-reconnections') || $user->hasPermissionTo('manage-collections');
+        return $user->hasPermission('request-reconnections') || $user->hasPermission('manage-collections') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function approve(User $user): bool
     {
-        return $user->hasPermissionTo('approve-reconnections') || $user->hasRole('SUPER_ADMIN');
+        return $user->hasPermission('approve-reconnections') || $user->hasRole('SUPER_ADMIN');
     }
 }

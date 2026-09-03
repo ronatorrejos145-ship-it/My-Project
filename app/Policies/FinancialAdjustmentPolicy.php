@@ -9,16 +9,16 @@ class FinancialAdjustmentPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-finance') || $user->hasPermissionTo('manage-adjustments');
+        return $user->hasPermission('view-finance') || $user->hasPermission('manage-adjustments') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create-adjustments') || $user->hasPermissionTo('manage-finance');
+        return $user->hasPermission('create-adjustments') || $user->hasPermission('manage-finance') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function approve(User $user, FinancialAdjustment $adjustment): bool
     {
-        return $user->hasPermissionTo('approve-adjustments') || $user->hasRole('SUPER_ADMIN');
+        return $user->hasPermission('approve-adjustments') || $user->hasRole('SUPER_ADMIN');
     }
 }

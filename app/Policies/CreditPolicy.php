@@ -9,16 +9,16 @@ class CreditPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-finance') || $user->hasPermissionTo('manage-credits');
+        return $user->hasPermission('view-finance') || $user->hasPermission('manage-credits') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('manage-credits') || $user->hasPermissionTo('create-credits');
+        return $user->hasPermission('manage-credits') || $user->hasPermission('create-credits') || $user->hasRole('SUPER_ADMIN');
     }
 
     public function apply(User $user, Credit $credit): bool
     {
-        return $user->hasPermissionTo('apply-credits') || $user->hasPermissionTo('manage-finance');
+        return $user->hasPermission('apply-credits') || $user->hasPermission('manage-finance') || $user->hasRole('SUPER_ADMIN');
     }
 }

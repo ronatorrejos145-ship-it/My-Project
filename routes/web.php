@@ -80,6 +80,26 @@ Route::post('api/public/applications', [PublicApplicationApiController::class, '
 Route::get('api/public/applications/{number}/status', [PublicApplicationApiController::class, 'status'])->name('api.applications.status');
 Route::get('api/gis/geojson/service-areas', [GisApiController::class, 'serviceAreaGeoJson'])->name('api.gis.geojson.service-areas');
 
+// Authenticated Customer Portal Routes
+Route::middleware(['auth', 'account.status'])->prefix('portal')->name('portal.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\CustomerPortalController::class, 'dashboard'])->name('dashboard');
+    Route::get('/services', [\App\Http\Controllers\CustomerPortalController::class, 'services'])->name('services');
+    Route::get('/invoices', [\App\Http\Controllers\CustomerPortalController::class, 'invoices'])->name('invoices');
+    Route::get('/invoices/{invoice}', [\App\Http\Controllers\CustomerPortalController::class, 'showInvoice'])->name('invoices.show');
+    Route::get('/invoices/{invoice}/pdf', [\App\Http\Controllers\CustomerPortalController::class, 'downloadInvoicePdf'])->name('invoices.pdf');
+    Route::get('/payments', [\App\Http\Controllers\CustomerPortalController::class, 'payments'])->name('payments');
+    Route::get('/requests', [\App\Http\Controllers\CustomerPortalController::class, 'requests'])->name('requests');
+    Route::post('/requests', [\App\Http\Controllers\CustomerPortalController::class, 'storeRequest'])->name('requests.store');
+});
+
+// Authenticated Customer REST APIs
+Route::middleware(['auth', 'account.status'])->prefix('api/customer')->name('api.customer.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\CustomerPortalApiController::class, 'dashboard'])->name('dashboard');
+    Route::get('/invoices', [\App\Http\Controllers\CustomerPortalApiController::class, 'invoices'])->name('invoices');
+    Route::get('/payments', [\App\Http\Controllers\CustomerPortalApiController::class, 'payments'])->name('payments');
+    Route::post('/requests', [\App\Http\Controllers\CustomerPortalApiController::class, 'createServiceRequest'])->name('requests.create');
+});
+
 // Authenticated Staff Routes
 Route::middleware(['auth', 'account.status'])->group(function () {
     // Customer Installation Acceptance Portal
