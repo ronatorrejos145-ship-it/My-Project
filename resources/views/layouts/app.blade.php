@@ -1,113 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-100 dark:bg-slate-950">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'ISP WiFi Platform') }} - @yield('title', 'Management')</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>@yield('title', 'ISP Platform') - {{ config('app.name', 'ISP Platform') }}</title>
+
+    <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 font-sans antialiased text-gray-900">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 bg-slate-900 text-white flex-shrink-0">
-            <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-                <div>
-                    <h1 class="text-lg font-bold text-sky-400">{{ config('app.name', 'ISP Platform') }}</h1>
-                    <p class="text-xs text-slate-400">ISP Operations Management</p>
+<body class="h-full font-sans antialiased text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-950">
+    <div class="min-h-full flex flex-col">
+        <!-- Top Navigation Bar -->
+        <nav class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xl font-black tracking-wider text-indigo-400">APEX<span class="text-white">ISP</span></span>
+                        <span class="px-2 py-0.5 text-xs font-semibold bg-indigo-950 text-indigo-300 border border-indigo-800 rounded">PRODUCTION</span>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        @auth
+                            <div class="text-sm">
+                                <span class="font-medium text-slate-200">{{ auth()->user()->name }}</span>
+                                <span class="ml-2 px-2 py-0.5 text-xs font-semibold bg-slate-800 text-indigo-300 rounded border border-slate-700">
+                                    {{ auth()->user()->roles->first()?->name ?? 'User' }}
+                                </span>
+                            </div>
+                            <form method="POST" action="{{ route('logout') }}" class="inline">
+                                @csrf
+                                <button type="submit" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 border border-slate-700 rounded-lg hover:bg-slate-800 transition">
+                                    Sign Out
+                                </button>
+                            </form>
+                        @endauth
+                    </div>
                 </div>
             </div>
+        </nav>
 
-            <nav class="p-4 space-y-1">
-                <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('dashboard') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Dashboard
-                </a>
-
-                @can('viewAny', App\Models\User::class)
-                <div class="pt-3 pb-1">
-                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Administration</p>
-                </div>
-                <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('admin.users.*') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Users
-                </a>
-                <a href="{{ route('admin.roles.index') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('admin.roles.*') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Roles & Permissions
-                </a>
-                <a href="{{ route('admin.departments.index') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('admin.departments.*') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Departments
-                </a>
-                @endcan
-
-                @can('viewAny', App\Models\Employee::class)
-                <a href="{{ route('admin.employees.index') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('admin.employees.*') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Employees
-                </a>
-                @endcan
-
-                @can('viewAny', App\Models\Customer::class)
-                <div class="pt-3 pb-1">
-                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">CRM & Operations</p>
-                </div>
-                <a href="{{ route('admin.customers.index') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('admin.customers.*') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Customers
-                </a>
-                @endcan
-
-                <div class="pt-3 pb-1">
-                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">System</p>
-                </div>
-                @if(Auth::user()->hasPermission('audit.view'))
-                <a href="{{ route('admin.audit-logs.index') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('admin.audit-logs.*') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Audit Logs
-                </a>
-                @endif
-
-                @if(Auth::user()->hasPermission('settings.manage'))
-                <a href="{{ route('admin.settings.index') }}" class="block px-3 py-2 rounded text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-                    Settings
-                </a>
-                @endif
-            </nav>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col min-w-0">
-            <!-- Top Navbar -->
-            <header class="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center">
-                <div class="font-semibold text-gray-700">
-                    @yield('header', 'Dashboard')
-                </div>
-
-                <div class="flex items-center space-x-4">
-                    <span class="text-sm text-gray-600">
-                        {{ Auth::user()->name }}
-                        <span class="text-xs bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono">
-                            {{ Auth::user()->roles->pluck('name')->implode(', ') ?: 'User' }}
-                        </span>
-                    </span>
-
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="text-sm bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded font-medium transition">
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            </header>
-
-            <!-- Content -->
-            <main class="p-6 flex-1">
-                @if(session('success'))
-                    <div class="mb-4 bg-emerald-50 border-l-4 border-emerald-500 p-4 text-emerald-700 text-sm rounded">
-                        {{ session('success') }}
+        <!-- Main Layout with Sidebar -->
+        <div class="flex-1 flex max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 gap-6">
+            <!-- Sidebar Navigation -->
+            <aside class="w-64 flex-shrink-0 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 h-fit">
+                <div class="space-y-6">
+                    <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Main</p>
+                        <div class="mt-2 space-y-1">
+                            <a href="{{ route('dashboard') }}" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                                📊 Dashboard
+                            </a>
+                        </div>
                     </div>
-                @endif
 
-                @if(session('error'))
-                    <div class="mb-4 bg-red-50 border-l-4 border-red-500 p-4 text-red-700 text-sm rounded">
-                        {{ session('error') }}
+                    <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Master Data (Phase 2)</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <a href="{{ route('admin.companies.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🏢 Companies</a>
+                            <a href="{{ route('admin.branches.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📍 Branches</a>
+                            <a href="{{ route('admin.service-areas.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🗺️ Service Areas</a>
+                            <a href="{{ route('admin.network.nodes.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📡 Network Infrastructure</a>
+                            <a href="{{ route('admin.assets.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📦 Assets & Tools</a>
+                            <a href="{{ route('admin.warehouses.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🏬 Warehouse Catalog</a>
+                            <a href="{{ route('admin.packages.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">⚡ Service Packages</a>
+                            <a href="{{ route('admin.finance.accounts.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">💼 Chart of Accounts</a>
+                            <a href="{{ route('admin.number-sequences.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🔢 Number Sequences</a>
+                        </div>
                     </div>
-                @endif
 
+                    <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Administration</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <a href="{{ route('admin.users.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👥 Users</a>
+                            <a href="{{ route('admin.departments.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🏛️ Departments</a>
+                            <a href="{{ route('admin.employees.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👔 Employees</a>
+                            <a href="{{ route('admin.customers.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">👤 Customers</a>
+                            <a href="{{ route('admin.roles-permissions.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🛡️ Roles & Permissions</a>
+                            <a href="{{ route('admin.audit-logs.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📋 Audit Logs</a>
+                            <a href="{{ route('admin.settings.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">⚙️ Settings</a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Workspace Content -->
+            <main class="flex-1 min-w-0">
                 @yield('content')
             </main>
         </div>

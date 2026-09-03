@@ -16,6 +16,17 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
             UserSeeder::class,
             SettingSeeder::class,
+            // Phase 2 Master Data Seeders
+            CompanyAndBranchSeeder::class,
+            PositionSeeder::class,
+            GeographySeeder::class,
+            ServiceAreaSeeder::class,
+            NetworkMasterDataSeeder::class,
+            AssetAndToolMasterDataSeeder::class,
+            WarehouseMasterDataSeeder::class,
+            PackageAndBillingMasterDataSeeder::class,
+            OperationsAndFinanceMasterDataSeeder::class,
+            NumberSequenceSeeder::class,
         ]);
     }
 }
