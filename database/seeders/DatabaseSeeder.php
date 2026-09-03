@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             ProductCatalogSeeder::class,
             // Phase 5 Online Application & Serviceability Seeder
             ServiceApplicationSeeder::class,
+            // Phase 6 GIS Infrastructure Seeder
+            GisInfrastructureSeeder::class,
         ]);
     }
 }

@@ -15,9 +15,17 @@ class ServiceArea extends Model
         'name',
         'branch_id',
         'description',
+        'boundary_geojson',
+        'color_code',
+        'geometry_version',
         'status',
         'serviceability_status',
         'notes',
+    ];
+
+    protected $casts = [
+        'boundary_geojson' => 'array',
+        'geometry_version' => 'integer',
     ];
 
     public function branch()
@@ -28,6 +36,11 @@ class ServiceArea extends Model
     public function networkNodes()
     {
         return $this->hasMany(NetworkNode::class);
+    }
+
+    public function networkTowers()
+    {
+        return $this->hasMany(NetworkTower::class);
     }
 
     public function barangays()

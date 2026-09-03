@@ -74,9 +74,20 @@
                     </div>
 
                     <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">GIS & Infrastructure Map (Phase 6)</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <a href="{{ route('admin.gis.map') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-indigo-600 dark:text-indigo-400">🗺️ GIS Operations Map</a>
+                            <a href="{{ route('admin.gis.dashboard') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📊 GIS Analytics</a>
+                            <a href="{{ route('admin.gis.towers.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🗼 Telecom Towers</a>
+                            <a href="{{ route('admin.gis.distribution-points.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">🔌 Fiber Splitters / DPs</a>
+                            <a href="{{ route('admin.gis.import.form') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📥 Import GPS Data</a>
+                        </div>
+                    </div>
+
+                    <div>
                         <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Applications & Coverage (Phase 5)</p>
                         <div class="mt-2 space-y-1 text-sm">
-                            <a href="{{ route('admin.applications.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-indigo-600 dark:text-indigo-400">📝 Service Applications</a>
+                            <a href="{{ route('admin.applications.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📝 Service Applications</a>
                             <a href="{{ route('admin.serviceability.check.form') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">📡 Serviceability Checker</a>
                         </div>
                     </div>

@@ -51,7 +51,7 @@ class Customer extends Model
     public function getFullNameAttribute(): string
     {
         if ($this->customer_type === 'BUSINESS' || $this->customer_type === 'CORPORATE') {
-            return $this->business_name ?: $this->legal_name ?: $this->contact_person;
+            return $this->business_name ?: $this->legal_name ?: $this->contact_person ?: "Customer #{$this->customer_number}";
         }
 
         return trim("{$this->first_name} {$this->middle_name} {$this->last_name} {$this->suffix}") ?: $this->contact_person ?: "Customer #{$this->customer_number}";

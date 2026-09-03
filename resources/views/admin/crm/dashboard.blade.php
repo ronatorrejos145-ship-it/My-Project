@@ -59,7 +59,7 @@
                     <div class="p-4 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                         <div>
                             <a href="{{ route('admin.customers.show', $c) }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
-                                {{ $c::class ? $c->full_name : '' }}
+                                {{ $c->full_name }}
                             </a>
                             <div class="text-xs text-slate-400 font-mono">#{{ $c->customer_number }} • {{ $c->primary_phone }}</div>
                         </div>

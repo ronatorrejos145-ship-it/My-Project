@@ -10,7 +10,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerDocumentController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\CrmDashboardController;
-use App\Http\Controllers\RoleAndPermissionController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CompanyController;
@@ -27,6 +27,10 @@ use App\Http\Controllers\ServicePackageApiController;
 use App\Http\Controllers\ServiceApplicationController;
 use App\Http\Controllers\ServiceabilityController;
 use App\Http\Controllers\PublicApplicationApiController;
+use App\Http\Controllers\GisMapController;
+use App\Http\Controllers\GisApiController;
+use App\Http\Controllers\NetworkTowerController;
+use App\Http\Controllers\DistributionPointController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\NumberSequenceController;
 
@@ -46,7 +50,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
 });
 
-// Public Customer Application Wizard & APIs
+// Public Customer Application Wizard & Public APIs (Sanitized output)
 Route::get('apply', [ServiceApplicationController::class, 'wizard'])->name('public.applications.wizard');
 Route::post('apply', [ServiceApplicationController::class, 'store'])->name('public.applications.submit');
 
@@ -54,11 +58,16 @@ Route::get('api/public/packages', [ServicePackageApiController::class, 'index'])
 Route::post('api/public/serviceability/check', [PublicApplicationApiController::class, 'checkServiceability'])->name('api.serviceability.check');
 Route::post('api/public/applications', [PublicApplicationApiController::class, 'submit'])->name('api.applications.submit');
 Route::get('api/public/applications/{number}/status', [PublicApplicationApiController::class, 'status'])->name('api.applications.status');
+Route::get('api/gis/geojson/service-areas', [GisApiController::class, 'serviceAreaGeoJson'])->name('api.gis.geojson.service-areas');
 
 // Authenticated Staff Routes
 Route::middleware(['auth', 'account.status'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Authenticated GIS Spatial Query APIs
+    Route::get('api/gis/viewport', [GisApiController::class, 'viewport'])->name('api.gis.viewport');
+    Route::get('api/gis/nearby', [GisApiController::class, 'nearby'])->name('api.gis.nearby');
 
     // Admin & Staff Routes
     Route::prefix('admin')->name('admin.')->group(function () {
@@ -66,6 +75,14 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 6 GIS Operations & Infrastructure Mapping
+        Route::get('gis/map', [GisMapController::class, 'map'])->name('gis.map');
+        Route::get('gis/dashboard', [GisMapController::class, 'dashboard'])->name('gis.dashboard');
+        Route::get('gis/import', [GisMapController::class, 'importForm'])->name('gis.import.form');
+        Route::post('gis/import', [GisMapController::class, 'importCsv'])->name('gis.import.csv');
+        Route::resource('gis/towers', NetworkTowerController::class, ['names' => 'gis.towers']);
+        Route::resource('gis/distribution-points', DistributionPointController::class, ['names' => 'gis.distribution-points']);
 
         // Phase 5 Applications & Serviceability
         Route::resource('applications', ServiceApplicationController::class);
@@ -98,7 +115,8 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::post('packages/{package}/versions', [ServicePackageVersionController::class, 'store'])->name('packages.versions.store');
 
         // RBAC, Audit, Settings
-        Route::get('roles-permissions', [RoleAndPermissionController::class, 'index'])->name('roles-permissions.index');
+        Route::get('roles-permissions', [RoleController::class, 'index'])->name('roles-permissions.index');
+        Route::resource('roles', RoleController::class);
         Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
