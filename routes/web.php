@@ -21,6 +21,8 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetManagementController;
 use App\Http\Controllers\AssetQrVerificationController;
 use App\Http\Controllers\AssetApiController;
+use App\Http\Controllers\SubscriberManagementController;
+use App\Http\Controllers\SubscriberApiController;
 use App\Http\Controllers\InventoryManagementController;
 use App\Http\Controllers\InventoryApiController;
 use App\Http\Controllers\ProcurementManagementController;
@@ -92,6 +94,10 @@ Route::middleware(['auth', 'account.status'])->group(function () {
     Route::get('api/gis/viewport', [GisApiController::class, 'viewport'])->name('api.gis.viewport');
     Route::get('api/gis/nearby', [GisApiController::class, 'nearby'])->name('api.gis.nearby');
 
+    // Phase 11 Subscriber REST APIs
+    Route::get('api/subscribers', [SubscriberApiController::class, 'index'])->name('api.subscribers.index');
+    Route::get('api/subscribers/{subscriber}', [SubscriberApiController::class, 'show'])->name('api.subscribers.show');
+
     // Phase 10 REST APIs
     Route::get('api/inventory', [InventoryApiController::class, 'index'])->name('api.inventory.index');
     Route::post('api/inventory/adjust', [InventoryApiController::class, 'adjust'])->name('api.inventory.adjust');
@@ -122,6 +128,13 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 11 Subscriber & Subscription Management Portal
+        Route::get('subscribers', [SubscriberManagementController::class, 'index'])->name('subscribers.index');
+        Route::get('subscribers/{subscriber}', [SubscriberManagementController::class, 'show'])->name('subscribers.show');
+        Route::post('subscribers/activate-handoff/{handoff}', [SubscriberManagementController::class, 'activateHandoff'])->name('subscribers.activate-handoff');
+        Route::post('subscribers/subscriptions/{subscription}/change-package', [SubscriberManagementController::class, 'changePackage'])->name('subscribers.change-package');
+        Route::post('subscribers/subscriptions/{subscription}/status', [SubscriberManagementController::class, 'updateStatus'])->name('subscribers.update-status');
 
         // Phase 10 Inventory, Procurement & Tool Portal Routes
         Route::get('inventory', [InventoryManagementController::class, 'index'])->name('inventory.index');

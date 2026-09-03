@@ -40,6 +40,8 @@ class DatabaseSeeder extends Seeder
             // Phase 8 Installation Management Seeders
             InstallationChecklistTemplateSeeder::class,
             InstallationWorkOrderSeeder::class,
+            // Phase 11 Subscriber & Subscription Seeder
+            SubscriberSeeder::class,
         ]);
     }
 }
