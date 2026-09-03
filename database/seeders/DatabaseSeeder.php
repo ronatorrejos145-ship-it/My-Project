@@ -37,6 +37,9 @@ class DatabaseSeeder extends Seeder
             GisInfrastructureSeeder::class,
             // Phase 7 Technical Survey Seeder
             TechnicalSurveySeeder::class,
+            // Phase 8 Installation Management Seeders
+            InstallationChecklistTemplateSeeder::class,
+            InstallationWorkOrderSeeder::class,
         ]);
     }
 }

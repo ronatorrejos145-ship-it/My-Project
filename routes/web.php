@@ -34,6 +34,9 @@ use App\Http\Controllers\DistributionPointController;
 use App\Http\Controllers\TechnicalSurveyController;
 use App\Http\Controllers\TechnicalSurveyReviewController;
 use App\Http\Controllers\TechnicalSurveyApiController;
+use App\Http\Controllers\InstallationWorkOrderController;
+use App\Http\Controllers\TechnicianInstallationController;
+use App\Http\Controllers\CustomerInstallationAcceptanceController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\NumberSequenceController;
 
@@ -63,6 +66,10 @@ Route::post('api/public/applications', [PublicApplicationApiController::class, '
 Route::get('api/public/applications/{number}/status', [PublicApplicationApiController::class, 'status'])->name('api.applications.status');
 Route::get('api/gis/geojson/service-areas', [GisApiController::class, 'serviceAreaGeoJson'])->name('api.gis.geojson.service-areas');
 
+// Customer Installation Acceptance Portal (Public / Tokenized or Auth)
+Route::get('customer/installations/{installation}/acceptance', [CustomerInstallationAcceptanceController::class, 'show'])->name('customer.installations.acceptance');
+Route::post('customer/installations/{installation}/accept', [CustomerInstallationAcceptanceController::class, 'accept'])->name('customer.installations.accept');
+
 // Authenticated Staff Routes
 Route::middleware(['auth', 'account.status'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -72,12 +79,32 @@ Route::middleware(['auth', 'account.status'])->group(function () {
     Route::get('api/gis/viewport', [GisApiController::class, 'viewport'])->name('api.gis.viewport');
     Route::get('api/gis/nearby', [GisApiController::class, 'nearby'])->name('api.gis.nearby');
 
+    // Phase 8 Mobile Technician Portal Routes
+    Route::prefix('technician')->name('technician.')->group(function () {
+        Route::get('installations', [TechnicianInstallationController::class, 'index'])->name('installations.index');
+        Route::get('installations/{installation}', [TechnicianInstallationController::class, 'show'])->name('installations.show');
+        Route::post('installations/{installation}/dispatch-enroute', [TechnicianInstallationController::class, 'dispatchEnRoute'])->name('installations.dispatch-enroute');
+        Route::post('installations/{installation}/arrive', [TechnicianInstallationController::class, 'arrive'])->name('installations.arrive');
+        Route::post('installations/{installation}/save-checklist', [TechnicianInstallationController::class, 'saveChecklist'])->name('installations.save-checklist');
+        Route::post('installations/{installation}/issue-material', [TechnicianInstallationController::class, 'issueMaterial'])->name('installations.issue-material');
+        Route::post('installations/{installation}/assign-equipment', [TechnicianInstallationController::class, 'assignEquipment'])->name('installations.assign-equipment');
+        Route::post('installations/{installation}/record-test', [TechnicianInstallationController::class, 'recordTest'])->name('installations.record-test');
+    });
+
     // Admin & Staff Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         // Users & Core HR
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 8 Installation Management & Dispatch
+        Route::resource('installations', InstallationWorkOrderController::class);
+        Route::post('installations/{installation}/assign', [InstallationWorkOrderController::class, 'assign'])->name('installations.assign');
+        Route::post('installations/{installation}/schedule', [InstallationWorkOrderController::class, 'schedule'])->name('installations.schedule');
+        Route::post('installations/{installation}/complete', [InstallationWorkOrderController::class, 'complete'])->name('installations.complete');
+        Route::post('installations/{installation}/review-supervisor', [InstallationWorkOrderController::class, 'reviewSupervisor'])->name('installations.review-supervisor');
+        Route::get('installations/{installation}/pdf', [InstallationWorkOrderController::class, 'downloadPdf'])->name('installations.download-pdf');
 
         // Phase 7 Field Technical Surveys & Site Inspections
         Route::resource('technical-surveys', TechnicalSurveyController::class);
@@ -110,7 +137,7 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::post('customers/{customer}/status', [CustomerController::class, 'changeStatus'])->name('customers.status');
         Route::post('customers/{customer}/notes', [CustomerController::class, 'addNote'])->name('customers.notes.store');
         Route::post('customers/{customer}/documents', [CustomerDocumentController::class, 'store'])->name('customers.documents.store');
-        Route::get('documents/{document}/download', [CustomerDocumentController::class, 'download'])->name('customers.documents.download');
+        Route::get('documents/{document}/download', [CustomerDocumentController::class, 'download'])->name('customers.download');
         Route::post('documents/{document}/verify', [CustomerDocumentController::class, 'verify'])->name('customers.documents.verify');
 
         // Phase 3 Leads & Pipeline
