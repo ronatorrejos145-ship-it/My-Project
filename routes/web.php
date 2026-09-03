@@ -18,6 +18,9 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ServiceAreaController;
 use App\Http\Controllers\NetworkNodeController;
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetManagementController;
+use App\Http\Controllers\AssetQrVerificationController;
+use App\Http\Controllers\AssetApiController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ServicePackageController;
 use App\Http\Controllers\ServiceCategoryController;
@@ -66,7 +69,7 @@ Route::post('api/public/applications', [PublicApplicationApiController::class, '
 Route::get('api/public/applications/{number}/status', [PublicApplicationApiController::class, 'status'])->name('api.applications.status');
 Route::get('api/gis/geojson/service-areas', [GisApiController::class, 'serviceAreaGeoJson'])->name('api.gis.geojson.service-areas');
 
-// Customer Installation Acceptance Portal (Public / Tokenized or Auth)
+// Customer Installation Acceptance Portal
 Route::get('customer/installations/{installation}/acceptance', [CustomerInstallationAcceptanceController::class, 'show'])->name('customer.installations.acceptance');
 Route::post('customer/installations/{installation}/accept', [CustomerInstallationAcceptanceController::class, 'accept'])->name('customer.installations.accept');
 
@@ -75,9 +78,18 @@ Route::middleware(['auth', 'account.status'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // QR Code Asset Lookup & Physical Audit Verification Routes (Protected)
+    Route::get('assets/qr/{asset_tag}', [AssetQrVerificationController::class, 'lookup'])->name('assets.qr.lookup');
+    Route::post('assets/qr/{asset}/verify', [AssetQrVerificationController::class, 'verify'])->name('assets.qr.verify');
+
     // Authenticated GIS Spatial Query APIs
     Route::get('api/gis/viewport', [GisApiController::class, 'viewport'])->name('api.gis.viewport');
     Route::get('api/gis/nearby', [GisApiController::class, 'nearby'])->name('api.gis.nearby');
+
+    // Phase 9 Asset Management REST APIs
+    Route::get('api/assets', [AssetApiController::class, 'index'])->name('api.assets.index');
+    Route::get('api/assets/{asset}', [AssetApiController::class, 'show'])->name('api.assets.show');
+    Route::post('api/assets', [AssetApiController::class, 'store'])->name('api.assets.store');
 
     // Phase 8 Mobile Technician Portal Routes
     Route::prefix('technician')->name('technician.')->group(function () {
@@ -97,6 +109,17 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 9 Equipment & Technical Asset Management Portal
+        Route::get('assets', [AssetManagementController::class, 'index'])->name('assets.index');
+        Route::get('assets/create', [AssetManagementController::class, 'create'])->name('assets.create');
+        Route::post('assets', [AssetManagementController::class, 'store'])->name('assets.store');
+        Route::get('assets/{asset}', [AssetManagementController::class, 'show'])->name('assets.show');
+        Route::post('assets/{asset}/transfer', [AssetManagementController::class, 'transfer'])->name('assets.transfer');
+        Route::post('assets/{asset}/replace', [AssetManagementController::class, 'replace'])->name('assets.replace');
+        Route::post('assets/{asset}/retire', [AssetManagementController::class, 'retire'])->name('assets.retire');
+        Route::post('assets/{asset}/dispose', [AssetManagementController::class, 'dispose'])->name('assets.dispose');
+        Route::post('assets/import', [AssetManagementController::class, 'importCsv'])->name('assets.import');
 
         // Phase 8 Installation Management & Dispatch
         Route::resource('installations', InstallationWorkOrderController::class);
@@ -167,10 +190,6 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::get('service-areas', [ServiceAreaController::class, 'index'])->name('service-areas.index');
         Route::get('network/nodes', [NetworkNodeController::class, 'index'])->name('network.nodes.index');
         Route::get('network/devices', [NetworkNodeController::class, 'devices'])->name('network.devices.index');
-
-        // Assets & Tools
-        Route::get('assets', [AssetController::class, 'index'])->name('assets.index');
-        Route::get('assets/tools', [AssetController::class, 'tools'])->name('assets.tools');
 
         // Warehouse & Items
         Route::get('warehouses', [WarehouseController::class, 'index'])->name('warehouses.index');
