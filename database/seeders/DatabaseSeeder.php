@@ -50,6 +50,8 @@ class DatabaseSeeder extends Seeder
             PaymentManagementSeeder::class,
             // Phase 15 Financial Adjustments Seeder
             Phase15FinancialAdjustmentSeeder::class,
+            // Phase 16 Collections & Suspension Seeder
+            Phase16CollectionsSeeder::class,
         ]);
     }
 }

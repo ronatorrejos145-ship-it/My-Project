@@ -176,6 +176,22 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::post('finance/adjustments', [\App\Http\Controllers\FinancialAdjustmentController::class, 'storeAdjustment'])->name('finance.adjustments.store');
         Route::post('finance/adjustments/{adjustment}/approve', [\App\Http\Controllers\FinancialAdjustmentController::class, 'approveAdjustment'])->name('finance.adjustments.approve');
 
+        // Phase 16 Collections, Delinquency, Suspension & Reconnection Routes
+        Route::get('finance/collections', [\App\Http\Controllers\CollectionsController::class, 'dashboard'])->name('finance.collections.dashboard');
+        Route::post('finance/collections/{account}/action', [\App\Http\Controllers\CollectionsController::class, 'recordAction'])->name('finance.collections.action');
+        Route::get('finance/collections/promises', [\App\Http\Controllers\CollectionsController::class, 'promises'])->name('finance.collections.promises');
+        Route::post('finance/collections/promises', [\App\Http\Controllers\CollectionsController::class, 'storePromise'])->name('finance.collections.promises.store');
+        Route::get('finance/collections/arrangements', [\App\Http\Controllers\CollectionsController::class, 'arrangements'])->name('finance.collections.arrangements');
+        Route::post('finance/collections/arrangements', [\App\Http\Controllers\CollectionsController::class, 'storeArrangement'])->name('finance.collections.arrangements.store');
+        Route::post('finance/collections/arrangements/{arrangement}/approve', [\App\Http\Controllers\CollectionsController::class, 'approveArrangement'])->name('finance.collections.arrangements.approve');
+        Route::get('finance/collections/suspensions', [\App\Http\Controllers\CollectionsController::class, 'suspensions'])->name('finance.collections.suspensions');
+        Route::post('finance/collections/suspensions', [\App\Http\Controllers\CollectionsController::class, 'requestSuspension'])->name('finance.collections.suspensions.store');
+        Route::get('finance/collections/reconnections', [\App\Http\Controllers\CollectionsController::class, 'reconnections'])->name('finance.collections.reconnections');
+        Route::post('finance/collections/reconnections', [\App\Http\Controllers\CollectionsController::class, 'requestReconnection'])->name('finance.collections.reconnections.store');
+        Route::get('finance/collections/write-offs', [\App\Http\Controllers\CollectionsController::class, 'writeOffs'])->name('finance.collections.writeoffs');
+        Route::post('finance/collections/write-offs', [\App\Http\Controllers\CollectionsController::class, 'requestWriteOff'])->name('finance.collections.writeoffs.store');
+        Route::post('finance/collections/write-offs/{requestModel}/approve', [\App\Http\Controllers\CollectionsController::class, 'approveWriteOff'])->name('finance.collections.writeoffs.approve');
+
         // Phase 12 Billing Engine Operations Portal
         Route::get('billing/dashboard', [BillingManagementController::class, 'dashboard'])->name('billing.dashboard');
         Route::get('billing/runs', [BillingManagementController::class, 'runs'])->name('billing.runs');
