@@ -25,6 +25,7 @@ use App\Http\Controllers\SubscriberManagementController;
 use App\Http\Controllers\SubscriberApiController;
 use App\Http\Controllers\BillingManagementController;
 use App\Http\Controllers\BillingApiController;
+use App\Http\Controllers\FinanceManagementController;
 use App\Http\Controllers\InventoryManagementController;
 use App\Http\Controllers\InventoryApiController;
 use App\Http\Controllers\ProcurementManagementController;
@@ -136,6 +137,16 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 13 Financial Portal Routes
+        Route::get('finance/invoices', [FinanceManagementController::class, 'invoices'])->name('finance.invoices.index');
+        Route::get('finance/invoices/{invoice}', [FinanceManagementController::class, 'showInvoice'])->name('finance.invoices.show');
+        Route::post('finance/invoices/generate/{serviceAccount}', [FinanceManagementController::class, 'generateForAccount'])->name('finance.invoices.generate');
+        Route::post('finance/invoices/{invoice}/finalize', [FinanceManagementController::class, 'finalizeInvoice'])->name('finance.invoices.finalize');
+        Route::post('finance/invoices/{invoice}/cancel', [FinanceManagementController::class, 'cancelInvoice'])->name('finance.invoices.cancel');
+        Route::get('finance/invoices/{invoice}/pdf', [FinanceManagementController::class, 'downloadInvoicePdf'])->name('finance.invoices.pdf');
+        Route::get('finance/ledger', [FinanceManagementController::class, 'ledger'])->name('finance.ledger.index');
+        Route::get('finance/reconciliation', [FinanceManagementController::class, 'reconciliation'])->name('finance.reconciliation');
 
         // Phase 12 Billing Engine Operations Portal
         Route::get('billing/dashboard', [BillingManagementController::class, 'dashboard'])->name('billing.dashboard');
