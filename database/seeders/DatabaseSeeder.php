@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
             ServiceApplicationSeeder::class,
             // Phase 6 GIS Infrastructure Seeder
             GisInfrastructureSeeder::class,
+            // Phase 7 Technical Survey Seeder
+            TechnicalSurveySeeder::class,
         ]);
     }
 }

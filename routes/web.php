@@ -31,6 +31,9 @@ use App\Http\Controllers\GisMapController;
 use App\Http\Controllers\GisApiController;
 use App\Http\Controllers\NetworkTowerController;
 use App\Http\Controllers\DistributionPointController;
+use App\Http\Controllers\TechnicalSurveyController;
+use App\Http\Controllers\TechnicalSurveyReviewController;
+use App\Http\Controllers\TechnicalSurveyApiController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\NumberSequenceController;
 
@@ -75,6 +78,16 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 7 Field Technical Surveys & Site Inspections
+        Route::resource('technical-surveys', TechnicalSurveyController::class);
+        Route::post('technical-surveys/{survey}/assign', [TechnicalSurveyController::class, 'assign'])->name('technical-surveys.assign');
+        Route::post('technical-surveys/{survey}/verify-gps', [TechnicalSurveyController::class, 'verifyGps'])->name('technical-surveys.verify-gps');
+        Route::post('technical-surveys/{survey}/upload-photo', [TechnicalSurveyController::class, 'uploadPhoto'])->name('technical-surveys.upload-photo');
+        Route::post('technical-surveys/{survey}/submit', [TechnicalSurveyController::class, 'submit'])->name('technical-surveys.submit');
+        Route::get('technical-surveys/{survey}/review', [TechnicalSurveyReviewController::class, 'reviewForm'])->name('technical-surveys.review.form');
+        Route::post('technical-surveys/{survey}/review', [TechnicalSurveyReviewController::class, 'review'])->name('technical-surveys.review');
+        Route::get('technical-surveys/{survey}/report', [TechnicalSurveyController::class, 'downloadReport'])->name('technical-surveys.report');
 
         // Phase 6 GIS Operations & Infrastructure Mapping
         Route::get('gis/map', [GisMapController::class, 'map'])->name('gis.map');

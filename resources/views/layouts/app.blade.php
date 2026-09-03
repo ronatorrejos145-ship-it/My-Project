@@ -74,6 +74,13 @@
                     </div>
 
                     <div>
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Field Operations (Phase 7)</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <a href="{{ route('admin.technical-surveys.index') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-indigo-600 dark:text-indigo-400">📋 Technical Surveys</a>
+                        </div>
+                    </div>
+
+                    <div>
                         <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">GIS & Infrastructure Map (Phase 6)</p>
                         <div class="mt-2 space-y-1 text-sm">
                             <a href="{{ route('admin.gis.map') }}" class="block px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-indigo-600 dark:text-indigo-400">🗺️ GIS Operations Map</a>
