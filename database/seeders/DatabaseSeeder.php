@@ -46,6 +46,10 @@ class DatabaseSeeder extends Seeder
             BillingEngineSeeder::class,
             // Phase 13 Invoice & Ledger Seeder
             InvoiceAndLedgerSeeder::class,
+            // Phase 14 Payment Management Seeder
+            PaymentManagementSeeder::class,
+            // Phase 15 Financial Adjustments Seeder
+            Phase15FinancialAdjustmentSeeder::class,
         ]);
     }
 }

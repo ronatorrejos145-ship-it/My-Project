@@ -147,6 +147,35 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::get('finance/ledger', [FinanceManagementController::class, 'ledger'])->name('finance.ledger.index');
         Route::get('finance/reconciliation', [FinanceManagementController::class, 'reconciliation'])->name('finance.reconciliation');
 
+        // Phase 14 Payments, Cashier & Bank Reconciliation Routes
+        Route::get('finance/payments', [\App\Http\Controllers\PaymentManagementController::class, 'payments'])->name('finance.payments.index');
+        Route::get('finance/payments/{payment}', [\App\Http\Controllers\PaymentManagementController::class, 'showPayment'])->name('finance.payments.show');
+        Route::post('finance/payments', [\App\Http\Controllers\PaymentManagementController::class, 'recordPayment'])->name('finance.payments.store');
+        Route::post('finance/payments/{payment}/verify', [\App\Http\Controllers\PaymentManagementController::class, 'verifyPayment'])->name('finance.payments.verify');
+        Route::post('finance/payments/{payment}/reverse', [\App\Http\Controllers\PaymentManagementController::class, 'reversePayment'])->name('finance.payments.reverse');
+        Route::get('finance/cashier', [\App\Http\Controllers\PaymentManagementController::class, 'cashierDashboard'])->name('finance.cashier.dashboard');
+        Route::post('finance/cashier/open', [\App\Http\Controllers\PaymentManagementController::class, 'openCashierSession'])->name('finance.cashier.open');
+        Route::post('finance/cashier/session/{session}/close', [\App\Http\Controllers\PaymentManagementController::class, 'closeCashierSession'])->name('finance.cashier.close');
+        Route::get('finance/bank-reconciliation', [\App\Http\Controllers\PaymentManagementController::class, 'bankReconciliation'])->name('finance.bank-reconciliation');
+        Route::post('finance/bank-reconciliation/{bankTx}/match', [\App\Http\Controllers\PaymentManagementController::class, 'matchBankTransaction'])->name('finance.bank-reconciliation.match');
+
+        // Phase 15 Rebates, Discounts, Credits, Refunds & Financial Adjustments Routes
+        Route::get('finance/discounts', [\App\Http\Controllers\FinancialAdjustmentController::class, 'discounts'])->name('finance.discounts.index');
+        Route::post('finance/discounts', [\App\Http\Controllers\FinancialAdjustmentController::class, 'storeDiscount'])->name('finance.discounts.store');
+        Route::get('finance/credits', [\App\Http\Controllers\FinancialAdjustmentController::class, 'credits'])->name('finance.credits.index');
+        Route::post('finance/credits', [\App\Http\Controllers\FinancialAdjustmentController::class, 'issueCredit'])->name('finance.credits.store');
+        Route::post('finance/credits/{credit}/apply', [\App\Http\Controllers\FinancialAdjustmentController::class, 'applyCredit'])->name('finance.credits.apply');
+        Route::get('finance/rebates', [\App\Http\Controllers\FinancialAdjustmentController::class, 'rebates'])->name('finance.rebates.index');
+        Route::post('finance/rebates/referral', [\App\Http\Controllers\FinancialAdjustmentController::class, 'storeReferralRebate'])->name('finance.rebates.referral');
+        Route::get('finance/refunds', [\App\Http\Controllers\FinancialAdjustmentController::class, 'refunds'])->name('finance.refunds.index');
+        Route::post('finance/refunds', [\App\Http\Controllers\FinancialAdjustmentController::class, 'storeRefund'])->name('finance.refunds.store');
+        Route::post('finance/refunds/{refund}/approve', [\App\Http\Controllers\FinancialAdjustmentController::class, 'approveRefund'])->name('finance.refunds.approve');
+        Route::post('finance/refunds/{refund}/process', [\App\Http\Controllers\FinancialAdjustmentController::class, 'processRefund'])->name('finance.refunds.process');
+        Route::post('finance/refunds/{refund}/reverse', [\App\Http\Controllers\FinancialAdjustmentController::class, 'reverseRefund'])->name('finance.refunds.reverse');
+        Route::get('finance/adjustments', [\App\Http\Controllers\FinancialAdjustmentController::class, 'adjustments'])->name('finance.adjustments.index');
+        Route::post('finance/adjustments', [\App\Http\Controllers\FinancialAdjustmentController::class, 'storeAdjustment'])->name('finance.adjustments.store');
+        Route::post('finance/adjustments/{adjustment}/approve', [\App\Http\Controllers\FinancialAdjustmentController::class, 'approveAdjustment'])->name('finance.adjustments.approve');
+
         // Phase 12 Billing Engine Operations Portal
         Route::get('billing/dashboard', [BillingManagementController::class, 'dashboard'])->name('billing.dashboard');
         Route::get('billing/runs', [BillingManagementController::class, 'runs'])->name('billing.runs');
