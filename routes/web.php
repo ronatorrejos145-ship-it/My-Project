@@ -21,6 +21,12 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetManagementController;
 use App\Http\Controllers\AssetQrVerificationController;
 use App\Http\Controllers\AssetApiController;
+use App\Http\Controllers\InventoryManagementController;
+use App\Http\Controllers\InventoryApiController;
+use App\Http\Controllers\ProcurementManagementController;
+use App\Http\Controllers\ProcurementApiController;
+use App\Http\Controllers\ToolManagementController;
+use App\Http\Controllers\ToolApiController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ServicePackageController;
 use App\Http\Controllers\ServiceCategoryController;
@@ -86,6 +92,13 @@ Route::middleware(['auth', 'account.status'])->group(function () {
     Route::get('api/gis/viewport', [GisApiController::class, 'viewport'])->name('api.gis.viewport');
     Route::get('api/gis/nearby', [GisApiController::class, 'nearby'])->name('api.gis.nearby');
 
+    // Phase 10 REST APIs
+    Route::get('api/inventory', [InventoryApiController::class, 'index'])->name('api.inventory.index');
+    Route::post('api/inventory/adjust', [InventoryApiController::class, 'adjust'])->name('api.inventory.adjust');
+    Route::get('api/procurement/requests', [ProcurementApiController::class, 'indexRequests'])->name('api.procurement.requests');
+    Route::get('api/procurement/orders', [ProcurementApiController::class, 'indexOrders'])->name('api.procurement.orders');
+    Route::get('api/tools', [ToolApiController::class, 'index'])->name('api.tools.index');
+
     // Phase 9 Asset Management REST APIs
     Route::get('api/assets', [AssetApiController::class, 'index'])->name('api.assets.index');
     Route::get('api/assets/{asset}', [AssetApiController::class, 'show'])->name('api.assets.show');
@@ -109,6 +122,17 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+
+        // Phase 10 Inventory, Procurement & Tool Portal Routes
+        Route::get('inventory', [InventoryManagementController::class, 'index'])->name('inventory.index');
+        Route::post('inventory/adjust', [InventoryManagementController::class, 'adjustStock'])->name('inventory.adjust');
+        Route::get('procurement', [ProcurementManagementController::class, 'index'])->name('procurement.index');
+        Route::get('procurement/po/create', [ProcurementManagementController::class, 'createPo'])->name('procurement.create-po');
+        Route::post('procurement/po', [ProcurementManagementController::class, 'storePo'])->name('procurement.store-po');
+        Route::post('procurement/po/{po}/receive', [ProcurementManagementController::class, 'receivePo'])->name('procurement.receive-po');
+        Route::get('tools', [ToolManagementController::class, 'index'])->name('tools.index');
+        Route::post('tools/{tool}/checkout', [ToolManagementController::class, 'checkout'])->name('tools.checkout');
+        Route::post('tools/checkouts/{checkout}/return', [ToolManagementController::class, 'return'])->name('tools.return');
 
         // Phase 9 Equipment & Technical Asset Management Portal
         Route::get('assets', [AssetManagementController::class, 'index'])->name('assets.index');

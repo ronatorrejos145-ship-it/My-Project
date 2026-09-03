@@ -14,79 +14,44 @@ This document specifies the core domain database architecture, schema normalizat
 - `positions`: Job title positions mapped to departments (`department_id` FK).
 - `employees`: Enhanced HR records with `branch_id`, `position_id`, and hierarchical `supervisor_id` FKs.
 
-### 2. Installation Management, Work Orders & Technician Dispatch (Phase 8)
-- `installation_work_orders`: Master field installation work order record. Sequential numbering `INSTALL-YYYY-XXXXXX` via `NumberSequenceService`. Links to `service_applications`, `customers`, `technical_surveys`, `service_packages`, `service_package_versions`, `branches`, `service_areas`, `addresses`, `locations`, `assigned_technician_id`, `supervisor_id`. Tracks work types (`NEW_INSTALLATION`, `RELOCATION`, `PACKAGE_UPGRADE`, `REINSTALLATION`), priority, appointment scheduling (`scheduled_start`, `scheduled_end`), status lifecycle (`PENDING`, `ASSIGNED`, `SCHEDULED`, `EN_ROUTE`, `ON_SITE`, `IN_PROGRESS`, `TESTING`, `PENDING_ACCEPTANCE`, `COMPLETED`, `FAILED`, `RESCHEDULED`, `CANCELLED`), GPS arrival coordinates, timestamps, failure reasons, and technical notes.
-- `installation_status_histories`: Immutable history log of work order status transitions.
-- `installation_assignments`: Technician/team assignment and dispatch history log.
-- `installation_schedules`: Appointment scheduling records with conflict detection and override reason tracking.
-- `installation_checklist_templates`, `installation_checklist_sections`, `installation_checklist_items`: Configurable installation checklist templates, sections, and items.
-- `installation_checklist_responses`: Technician responses to installation checklist items.
-- `installation_photos`: Secure private photo storage (`BEFORE`, `SITE`, `MOUNTING`, `EQUIPMENT`, `SERIAL_LABEL`, `MAC_LABEL`, `CABLE_ROUTING`, `POWER`, `AFTER`, `FINAL`) with GPS metadata.
-- `installation_materials`: Material tracking for planned, reserved, issued, consumed, returned, damaged, and variance quantities.
-- `installation_equipment`: Installed equipment assignment (`asset_id`, `equipment_type`, `model_name`, `serial_number`, `mac_address`, `condition_before`, `condition_after`).
-- `installation_tools`: Required/issued field tools tracking.
-- `installation_tests`: Field technical test results (`POWER`, `LINK`, `INTERNET`, `DNS`, `DOWNLOAD`, `UPLOAD`, `LATENCY`, `PACKET_LOSS`, `WIFI`, `SIGNAL`) with threshold evaluations (`PASS`, `FAIL`, `WARNING`, `NOT_MEASURED`).
-- `installation_failures` & `installation_reschedules`: Structured failure classifications, rescheduling history, and recommended actions.
-- `installation_acceptances`: Digital customer acknowledgment, relationship, signature path, status (`ACCEPTED`, `ACCEPTED_WITH_ISSUES`, `REJECTED`), IP address, and user agent metadata.
-- `installation_supervisor_reviews`: Supervisor verification records and decisions (`APPROVE`, `RETURN_FOR_REWORK`, `FAIL`).
-- `installation_notes`: Categorized notes (`TECHNICIAN`, `SUPERVISOR`, `CUSTOMER`, `TECHNICAL`, `REWORK`).
-- `installation_handoffs`: Atomic operational handoff record (`READY_FOR_ACTIVATION`) storing handover data for future subscription activation (Phase 11).
+### 2. Inventory, Procurement & Technical Tools (Phase 10)
+- `stock_balances`: On hand, reserved, damaged, and in-transit stock balances per item, warehouse, and location (`quantity_on_hand`, `quantity_reserved`, `quantity_damaged`, `quantity_in_transit`).
+- `inventory_transactions`: Immutable movement ledger (`INV_TX-YYYY-XXXXXX`) recording all stock changes (`RECEIPT`, `ISSUE`, `RETURN`, `TRANSFER_IN`, `TRANSFER_OUT`, `RESERVATION`, `ADJUSTMENT_IN`, `ADJUSTMENT_OUT`, `DAMAGE`, `LOSS`).
+- `stock_reservations`: Stock reservation records for work orders and installations.
+- `material_requests` & `material_request_items`: Internal material requisition workflow (`DRAFT`, `SUBMITTED`, `APPROVED`, `PARTIALLY_FULFILLED`, `FULFILLED`, `REJECTED`).
+- `inventory_transfers` & `inventory_transfer_items`: Inter-warehouse and branch stock transfer tracking (`REQUESTED`, `IN_TRANSIT`, `RECEIVED`).
+- `stocktakes` & `stocktake_items`: Physical inventory audit counting and variance reconciliation.
+- `purchase_requests` & `purchase_request_items`: Procurement purchase requests (`PR-YYYY-XXXXXX`) with department priority and approval tracking.
+- `supplier_quotations`: Supplier quotations and price comparisons.
+- `purchase_orders` & `purchase_order_items`: Purchase order master (`PO-YYYY-XXXXXX`) with supplier line items and delivery terms.
+- `goods_receipts` & `goods_receipt_items`: Goods receiving vouchers (`GR-YYYY-XXXXXX`) with over-receiving protection and partial/full PO receipt handling.
+- `tool_checkouts`, `tool_inspections`, `tool_calibrations`: Technical field tool checkout/check-in tracking, condition inspections, and calibration due alerts.
 
-### 3. Technical Surveys, Site Inspections & Field Feasibility (Phase 7)
-- `technical_surveys`: Technical survey master record. Sequential numbering `SUR-YYYY-XXXXXX` via `NumberSequenceService`. Stores application and customer references, dispatched technician, supervisor, survey type (`NEW_INSTALLATION`, `UPGRADE_ASSESSMENT`, `RELOCATION`, `RE_SURVEY`), lifecycle status (`DRAFT`, `ASSIGNED`, `SCHEDULED`, `ON_SITE`, `IN_PROGRESS`, `PENDING_TECHNICAL_REVIEW`, `APPROVED`, `REJECTED`, `RESURVEY_REQUIRED`), priority, GPS arrival coordinates, verification status, distance in meters, line of sight status (`CLEAR`, `PARTIAL`, `BLOCKED`), installation complexity (`EASY`, `NORMAL`, `MODERATE`, `DIFFICULT`, `VERY_DIFFICULT`), site safety assessment (`SAFE`, `CAUTION`, `UNSAFE`), technical recommendations, and supervisor approval decisions.
-- `technical_survey_status_histories`: Immutable history of survey status transitions.
-- `technical_survey_assignments`: Technician assignment and dispatch history log.
-- `technical_survey_checklist_templates` & `technical_survey_checklist_items`: Configurable site inspection checklist templates and items.
-- `technical_survey_responses`: Technician responses to site inspection checklist items.
-- `technical_survey_measurements`: Field signal measurements (`OPTICAL_POWER`, `RSSI`, `SNR`, `LATENCY_MS`, `NOISE_FLOOR`) with acceptance statuses (`PASS`, `FAIL`, `MARGINAL`).
-- `technical_survey_photos`: Secure field photo metadata (`FACADE`, `MOUNTING_LOCATION`, `ROOF`, `CABLE_ROUTE`, `LINE_OF_SIGHT`, `HAZARD`).
-- `technical_survey_materials`: Material estimations (`item_id`, `estimated_quantity`, `unit`).
-- `technical_survey_equipment`: Recommended equipment models (`asset_model_id`, `quantity`).
-- `technical_survey_signatures`: Signatures and acknowledgments (`TECHNICIAN`, `CUSTOMER`, `SUPERVISOR`).
-- Hand-off: Approved technical surveys update `service_applications` status to `APPROVED` / `READY_FOR_INSTALLATION` for Phase 8 field installation work order dispatch.
+### 3. Technical Equipment & Asset Management (Phase 9)
+- `assets`: Master serialized equipment records (`AST-YYYY-XXXXXX`) storing serial numbers, MAC addresses, warranty, condition, and status (`AVAILABLE`, `RESERVED`, `ASSIGNED`, `INSTALLED`, `IN_REPAIR`, `DAMAGED`, `LOST`, `RETIRED`, `DISPOSED`).
+- `asset_status_histories`, `asset_assignments`, `asset_transfers`, `asset_verifications`, `asset_audit_sessions`, `asset_replacements`, `asset_retirements`, `asset_disposals`, `asset_incidents`, `asset_documents`, `asset_photos`, `asset_interfaces`.
 
-### 4. GIS, Infrastructure Mapping & Location Intelligence (Phase 6)
-- `network_towers`: Telecom towers, monopoles, rooftop antenna masts.
-- `distribution_points`: Fiber splitters, cabinets, distribution boxes (`code`, `name`, `dp_type`, `capacity`, `parent_node_id`, `latitude`, `longitude`, `status`, `notes`).
-- `location_histories`: Immutable audit log of coordinate movement changes.
-- `service_areas`: Enhanced with `boundary_geojson`, `color_code`, `geometry_version`.
-- `gis_imports`: Audit log for imported CSV/GeoJSON coordinate files.
-- Spatial Bounding-Box APIs: `/api/gis/viewport`, `/api/gis/nearby`, `/api/gis/geojson/service-areas`.
+### 4. Installation Management, Work Orders & Technician Dispatch (Phase 8)
+- `installation_work_orders`: Master field installation work order record (`INSTALL-YYYY-XXXXXX`).
+- `installation_status_histories`, `installation_assignments`, `installation_schedules`, `installation_checklist_templates/sections/items/responses`, `installation_photos`, `installation_materials`, `installation_equipment`, `installation_tools`, `installation_tests`, `installation_failures`, `installation_acceptances`, `installation_supervisor_reviews`, `installation_handoffs`.
 
-### 5. Online Customer Applications & Serviceability Engine (Phase 5)
-- `service_applications`: Online service application master record. Sequential numbering `APP-YYYY-XXXXXX`.
-- `service_application_status_histories`: Immutable history of application lifecycle status transitions.
-- `serviceability_checks`: Audit log of technical and commercial serviceability evaluations using the **Haversine formula** GPS distance calculation engine.
-- `application_documents`: Attachment metadata for required applicant IDs, proof of address, etc.
+### 5. Technical Surveys, Site Inspections & Field Feasibility (Phase 7)
+- `technical_surveys`: Technical survey master record (`SUR-YYYY-XXXXXX`).
 
-### 6. Product Catalog & Service Package Versioning (Phase 4)
-- `service_categories`: Configurable broadband service categories (`HOME`, `BUSINESS`, `CORPORATE`, `PREPAID`, `PUBLIC_WIFI`, `DEDICATED`).
-- `service_packages`: Broadband plans storing speeds, technology, FUP policies, and commercial terms.
-- `service_package_versions`: Historical price and speed versioning table.
-- `package_features` & `package_feature_service_package`: Reusable feature tags.
-- `promotions` & `promotion_service_package`: Campaign promotions.
-- `package_equipment_requirements`: Required hardware items per package.
-- Availability Matrices (`service_package_branch`, `service_package_service_area`, `service_package_customer_type`).
+### 6. GIS, Infrastructure Mapping & Location Intelligence (Phase 6)
+- `network_towers`, `distribution_points`, `location_histories`, `service_areas`, `gis_imports`.
 
-### 7. Customer Management & CRM 360 (Phase 3)
-- `customers`: Master subscriber accounts with `customer_number` (`CUST-XXXXXX`) and `account_number` (`ACC-XXXXXX`).
-- `customer_status_histories`, `customer_contacts`, `customer_address_histories`, `customer_documents`, `customer_notes`, `customer_tags`, `customer_referrals`, `customer_assignments`, `customer_consents`, `customer_activities`.
-- `leads`, `lead_status_histories`, `lead_activities`: CRM sales lead pipeline management and atomic conversion into subscriber accounts.
+### 7. Online Customer Applications & Serviceability Engine (Phase 5)
+- `service_applications` (`APP-YYYY-XXXXXX`), `serviceability_checks`.
 
-### 8. Geography & Locations
-- `regions`, `provinces`, `cities_municipalities`, `barangays`, `addresses`, `locations`.
+### 8. Product Catalog & Service Package Versioning (Phase 4)
+- `service_categories`, `service_packages`, `service_package_versions`, `package_features`, `promotions`.
 
-### 9. Network Infrastructure
-- `network_nodes`, `access_points`, `network_devices`, `network_interfaces`.
+### 9. Customer Management & CRM 360 (Phase 3)
+- `customers` (`CUST-XXXXXX`, `ACC-XXXXXX`), `leads`.
 
-### 10. Hardware Assets & Technical Tools
-- `asset_categories`, `asset_models`, `assets`, `asset_histories`, `tool_categories`, `tools`.
-
-### 11. Warehouse & Supply Chain
-- `warehouses`, `warehouse_locations`, `item_categories`, `items`, `suppliers`, `item_supplier`.
-
-### 12. Operations, Support & Finance
-- `ticket_categories`, `ticket_priorities`, `ticket_statuses`, `sla_definitions`, `work_orders`, `accounts`, `transaction_types`, `number_sequences`.
+### 10. Geography, Network & Warehouse
+- `regions`, `provinces`, `cities_municipalities`, `barangays`, `addresses`, `locations`, `network_nodes`, `warehouses`, `warehouse_locations`, `items`, `suppliers`, `tools`.
 
 ---
 
