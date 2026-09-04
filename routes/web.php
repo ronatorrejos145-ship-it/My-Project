@@ -100,6 +100,16 @@ Route::middleware(['auth', 'account.status'])->prefix('api/customer')->name('api
     Route::post('/requests', [\App\Http\Controllers\CustomerPortalApiController::class, 'createServiceRequest'])->name('requests.create');
 });
 
+// Phase 18 Support REST APIs
+Route::middleware(['auth', 'account.status'])->prefix('api/support')->name('api.support.')->group(function () {
+    Route::get('/tickets', [\App\Http\Controllers\SupportApiController::class, 'indexTickets'])->name('tickets.index');
+    Route::get('/tickets/{ticket}', [\App\Http\Controllers\SupportApiController::class, 'showTicket'])->name('tickets.show');
+    Route::post('/tickets/{ticket}/messages', [\App\Http\Controllers\SupportApiController::class, 'addMessage'])->name('tickets.messages.add');
+    Route::get('/complaints', [\App\Http\Controllers\SupportApiController::class, 'indexComplaints'])->name('complaints.index');
+    Route::get('/incidents', [\App\Http\Controllers\SupportApiController::class, 'indexIncidents'])->name('incidents.index');
+    Route::get('/knowledge-base', [\App\Http\Controllers\SupportApiController::class, 'searchKnowledgeBase'])->name('knowledge-base.search');
+});
+
 // Authenticated Staff Routes
 Route::middleware(['auth', 'account.status'])->group(function () {
     // Customer Installation Acceptance Portal
@@ -211,6 +221,17 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         Route::get('finance/collections/write-offs', [\App\Http\Controllers\CollectionsController::class, 'writeOffs'])->name('finance.collections.writeoffs');
         Route::post('finance/collections/write-offs', [\App\Http\Controllers\CollectionsController::class, 'requestWriteOff'])->name('finance.collections.writeoffs.store');
         Route::post('finance/collections/write-offs/{requestModel}/approve', [\App\Http\Controllers\CollectionsController::class, 'approveWriteOff'])->name('finance.collections.writeoffs.approve');
+
+        // Phase 18 Customer Service, Ticketing, SLA & Complaints Routes
+        Route::get('support/dashboard', [\App\Http\Controllers\SupportController::class, 'dashboard'])->name('support.dashboard');
+        Route::get('support/tickets', [\App\Http\Controllers\SupportController::class, 'tickets'])->name('support.tickets.index');
+        Route::get('support/tickets/{ticket}', [\App\Http\Controllers\SupportController::class, 'showTicket'])->name('support.tickets.show');
+        Route::post('support/tickets', [\App\Http\Controllers\SupportController::class, 'storeTicket'])->name('support.tickets.store');
+        Route::post('support/tickets/{ticket}/reply', [\App\Http\Controllers\SupportController::class, 'replyTicket'])->name('support.tickets.reply');
+        Route::post('support/tickets/{ticket}/status', [\App\Http\Controllers\SupportController::class, 'updateTicketStatus'])->name('support.tickets.status');
+        Route::get('support/complaints', [\App\Http\Controllers\SupportController::class, 'complaints'])->name('support.complaints.index');
+        Route::get('support/incidents', [\App\Http\Controllers\SupportController::class, 'incidents'])->name('support.incidents.index');
+        Route::get('support/knowledge-base', [\App\Http\Controllers\SupportController::class, 'knowledgeBase'])->name('support.knowledge-base.index');
 
         // Phase 12 Billing Engine Operations Portal
         Route::get('billing/dashboard', [BillingManagementController::class, 'dashboard'])->name('billing.dashboard');
@@ -331,4 +352,34 @@ Route::middleware(['auth', 'account.status'])->group(function () {
         // Number Sequences
         Route::get('number-sequences', [NumberSequenceController::class, 'index'])->name('number-sequences.index');
     });
+});
+
+// Phase 19: Maintenance, Field Service, Work Orders & Dispatch Routes
+Route::middleware(['auth'])->prefix('admin/maintenance')->name('admin.maintenance.')->group(function () {
+    Route::get('/work-orders', [App\Http\Controllers\Admin\WorkOrderController::class, 'index'])->name('work-orders.index');
+    Route::get('/work-orders/create', [App\Http\Controllers\Admin\WorkOrderController::class, 'create'])->name('work-orders.create');
+    Route::post('/work-orders', [App\Http\Controllers\Admin\WorkOrderController::class, 'store'])->name('work-orders.store');
+    Route::get('/work-orders/{id}', [App\Http\Controllers\Admin\WorkOrderController::class, 'show'])->name('work-orders.show');
+    Route::post('/work-orders/{id}/status', [App\Http\Controllers\Admin\WorkOrderController::class, 'updateStatus'])->name('work-orders.update-status');
+
+    Route::get('/dispatch', [App\Http\Controllers\Admin\DispatchController::class, 'workbench'])->name('dispatch.workbench');
+    Route::post('/dispatch/{id}/assign', [App\Http\Controllers\Admin\DispatchController::class, 'assign'])->name('dispatch.assign');
+    Route::post('/dispatch/{id}/schedule', [App\Http\Controllers\Admin\DispatchController::class, 'schedule'])->name('dispatch.schedule');
+
+    Route::get('/plans', [App\Http\Controllers\Admin\MaintenancePlanController::class, 'index'])->name('plans.index');
+    Route::post('/plans', [App\Http\Controllers\Admin\MaintenancePlanController::class, 'store'])->name('plans.store');
+    Route::post('/plans/trigger', [App\Http\Controllers\Admin\MaintenancePlanController::class, 'triggerSchedules'])->name('plans.trigger');
+
+    Route::get('/reports', [App\Http\Controllers\Admin\WorkOrderReportController::class, 'index'])->name('reports.index');
+});
+
+// Phase 19: Technician Mobile Routes
+Route::middleware(['auth'])->prefix('technician')->name('technician.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Technician\TechnicianMobileController::class, 'dashboard'])->name('dashboard');
+    Route::get('/work-orders/{id}', [App\Http\Controllers\Technician\TechnicianMobileController::class, 'show'])->name('work-orders.show');
+    Route::post('/work-orders/{id}/gps', [App\Http\Controllers\Technician\TechnicianMobileController::class, 'recordGps'])->name('work-orders.record-gps');
+    Route::post('/work-orders/{id}/diagnostic', [App\Http\Controllers\Technician\TechnicianMobileController::class, 'recordDiagnostic'])->name('work-orders.record-diagnostic');
+    Route::post('/work-orders/{id}/material', [App\Http\Controllers\Technician\TechnicianMobileController::class, 'consumeMaterial'])->name('work-orders.consume-material');
+    Route::post('/work-orders/{id}/replace-equipment', [App\Http\Controllers\Technician\TechnicianMobileController::class, 'replaceEquipment'])->name('work-orders.replace-equipment');
+    Route::post('/work-orders/{id}/complete', [App\Http\Controllers\Technician\TechnicianMobileController::class, 'completeJob'])->name('work-orders.complete');
 });
